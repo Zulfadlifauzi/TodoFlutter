@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/database_helper.dart';
+import 'package:todolist/models/task.dart';
 import 'package:todolist/widgets.dart';
 
 class TaskPage extends StatefulWidget {
@@ -15,12 +17,12 @@ class _TaskPageState extends State<TaskPage> {
       body: SafeArea(
         child: Container(
             child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 10.0,bottom: 6.0),
+                  padding: EdgeInsets.only(top: 10.0, bottom: 6.0),
                   child: Row(
                     children: [
                       InkWell(
@@ -36,6 +38,15 @@ class _TaskPageState extends State<TaskPage> {
                       ),
                       Expanded(
                         child: TextField(
+                          onSubmitted: (value) async {
+                            if (value != '') {
+                              DatabaseHelper _dbHelper = DatabaseHelper();
+                              Task _newTask = Task(title: value);
+                              await _dbHelper.insertTask(_newTask);
+
+                              print('New task has been created');
+                            }
+                          },
                           decoration: InputDecoration(
                             hintText: 'Enter Todo Title',
                             border: InputBorder.none,
@@ -50,17 +61,12 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                    bottom: 12.0
-                  ),
+                  padding: EdgeInsets.only(bottom: 12.0),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Enter description for the task..',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 24.0
-                      )
-                    ),
+                        hintText: 'Enter description for the task..',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 24.0)),
                   ),
                 ),
                 TodoWidget(
@@ -73,14 +79,12 @@ class _TaskPageState extends State<TaskPage> {
                 ),
                 TodoWidget(
                   isDone: false,
-
                 ),
                 TodoWidget(
                   isDone: true,
-
                 ),
-          ],
-        ),
+              ],
+            ),
             Positioned(
               bottom: 24.0,
               right: 24.0,
@@ -102,7 +106,7 @@ class _TaskPageState extends State<TaskPage> {
               ),
             )
           ],
-            )),
+        )),
       ),
     );
   }
