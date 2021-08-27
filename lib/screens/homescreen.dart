@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/database_helper.dart';
 import 'package:todolist/screens/taskpage.dart';
 import 'package:todolist/widgets.dart';
 
@@ -10,6 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DatabaseHelper _dbHelper = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,23 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ScrollConfiguration(
-                    behavior: NoGlowBehavior(),
-                    child: ListView(
-                      children: [
-                        TaskCardWidget(
-                          title: 'Get Started!',
-                          desc:
-                              'Hello User! Welcome to TodoList app, simple and easy application for you to create,read,update and delete',
-                        ),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                        TaskCardWidget(),
-                      ],
-                    ),
-                  ),
-                )
+                    child: FutureBuilder(
+                  future: _dbHelper.getTasks(),
+                  builder: (context, snapshot) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return TaskCardWidget();
+                      },
+                    );
+                  },
+                ))
               ],
             ),
             Positioned(
@@ -62,14 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 50.0,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF7349FE), Color(0xFF643FDB)
-                        ],
-                        begin: Alignment(
-                          0.0, -1.0
-                        ),
-                        end: Alignment(0.0, 1.0)
-                      ),
+                          colors: [Color(0xFF7349FE), Color(0xFF643FDB)],
+                          begin: Alignment(0.0, -1.0),
+                          end: Alignment(0.0, 1.0)),
                       borderRadius: BorderRadius.circular(15.0)),
                   child: Image(
                     image: AssetImage('images/add_icon.png'),

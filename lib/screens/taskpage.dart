@@ -43,7 +43,7 @@ class _TaskPageState extends State<TaskPage> {
                               DatabaseHelper _dbHelper = DatabaseHelper();
                               Task _newTask = Task(title: value);
                               await _dbHelper.insertTask(_newTask);
-
+                              
                               print('New task has been created');
                             }
                           },
